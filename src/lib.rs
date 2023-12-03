@@ -1,5 +1,14 @@
 #![allow(clippy::type_complexity)]
 
+mod load;
+mod map;
+mod player;
+mod plugins;
+mod resources;
+mod settings;
+
+use load::*;
+
 use bevy::app::App;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
@@ -23,17 +32,17 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        // app.add_state::<GameState>().add_plugins((
-        //     LoadingPlugin,
-        //     MenuPlugin,
-        //     ActionsPlugin,
-        //     InternalAudioPlugin,
-        //     PlayerPlugin,
-        // ));;
+        app.add_state::<GameState>()
+            .add_plugins(plugins::Plugins)
+            .add_systems(Startup, setup_camera);
 
         #[cfg(debug_assertions)]
         {
             app.add_plugins((FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin::default()));
         }
     }
+}
+
+fn setup_camera(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
 }
