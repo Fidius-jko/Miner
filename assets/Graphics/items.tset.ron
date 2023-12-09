@@ -1,0 +1,20 @@
+(
+	sources: {
+		"source": TextureAtlas {
+			source: "source/items.png",
+			rows: 1,
+			columns: 7,
+			tile_size: Vec2(32, 32)
+		}
+	},
+
+	textures: {
+		"tree": Atlas(source: "source", index: Vec2(1,1)),
+		"iron": Atlas(source: "source", index: Vec2(2, 1)),
+		"iron_ingot": Atlas(source: "source", index: Vec2(3, 1)),
+		"boer": Atlas(source: "source", index: Vec2(4, 1)),
+		"boer_updated": Atlas(source: "source", index: Vec2(5, 1)),
+		"hp": Atlas(source: "source", index: Vec2(6, 1)),
+		"half_hp": Atlas(source: "source", index: Vec2(7, 1))		
+	}
+)

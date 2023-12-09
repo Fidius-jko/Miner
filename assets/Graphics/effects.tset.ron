@@ -1,0 +1,24 @@
+(
+	sources: {
+		"source": TextureAtlas (
+			source: "source/effects.png",
+			tile_size: Vec2(
+				16.,
+				16.
+			),
+			rows: 1,
+			columns: 4
+		),
+	}
+
+	textures: {
+		"smoke": Variant(
+			variants: {
+				"1": Atlas(source: "source", index: Vec2(1., 1.)),
+				"2": Atlas(source: "source", index: Vec2(2., 1.)),
+				"3": Atlas(source: "source", index: Vec2(3., 1.)),
+				"4": Atlas(source: "source", index: Vec2(4., 1.)),
+			}
+		),
+	}
+)

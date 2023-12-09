@@ -1,0 +1,17 @@
+(
+	sources: {
+		"source": TextureAtlas (
+			source: "source/robot.png",
+			rows: 1,
+			columns: 4,
+			tile_size: Vec2(16., 16.)
+		)
+	},
+
+	textures: {
+		"down": Single(Atlas(source: "source", index: Vec2(1, 1))),
+		"up": Single(Atlas(source: "source", index: Vec2(2, 1))),
+		"right": Single(Atlas(source: "source", index: Vec2(3, 1))),
+		"left": Single(Atlas(source: "source", index: Vec2(4, 1))),
+	}
+)
