@@ -59,10 +59,7 @@ impl ControlBinds {
     }
     pub fn is_pressed(&self, name: &str) -> bool {
         match self.binds.get(name) {
-            Some((is, s)) => match is {
-                IsRun::Not => false,
-                _ => true,
-            },
+            Some((is, _s)) => !matches!(is, IsRun::Not),
             None => {
                 warn!("Control is not registered. Register it!");
                 false
@@ -71,10 +68,7 @@ impl ControlBinds {
     }
     pub fn is_just_pressed(&self, name: &str) -> bool {
         match self.binds.get(name) {
-            Some((is, s)) => match is {
-                IsRun::OnceRun => true,
-                _ => false,
-            },
+            Some((is, _s)) => matches!(is, IsRun::OnceRun),
             None => {
                 warn!("Control is not registered. Register it!");
                 false
@@ -83,10 +77,7 @@ impl ControlBinds {
     }
     pub fn is_just_released(&self, name: &str) -> bool {
         match self.binds.get(name) {
-            Some((is, s)) => match is {
-                IsRun::ReleaseRun => true,
-                _ => false,
-            },
+            Some((is, _s)) => matches!(is, IsRun::ReleaseRun),
             None => {
                 warn!("Control is not registered. Register it!");
                 false

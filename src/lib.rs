@@ -27,6 +27,8 @@ enum GameState {
     // Here the menu is drawn and waiting for player interaction
     Menu,
 }
+#[derive(Resource)]
+pub struct Tick(u64);
 
 pub struct GamePlugin;
 
@@ -34,7 +36,9 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_state::<GameState>()
             .add_plugins(plugins::Plugins)
-            .add_systems(Startup, setup_camera);
+            .add_systems(Startup, setup_camera)
+            .insert_resource(Tick(0))
+            .add_systems(Update, update_tick.run_if(in_state(GameState::Playing)));
 
         #[cfg(debug_assertions)]
         {
@@ -42,7 +46,12 @@ impl Plugin for GamePlugin {
         }
     }
 }
+fn update_tick(mut tick: ResMut<Tick>) {
+    tick.0 += 1;
+}
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands
+        .spawn(Camera2dBundle::default())
+        .insert(player::PlayerCamera::default());
 }

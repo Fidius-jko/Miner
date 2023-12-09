@@ -18,16 +18,18 @@
 						Atlas(source: "source", index: Vec2(7.,2.)),
 						Atlas(source: "source", index: Vec2(7.,5.)),
 						Atlas(source: "source", index: Vec2(7.,8.)),
+						Atlas(source: "source", index: Vec2(7.,5.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 				"up": Animated(
 					frames: [
 						Atlas(source: "source", index: Vec2(8.,1.)),
 						Atlas(source: "source", index: Vec2(8.,4.)),
 						Atlas(source: "source", index: Vec2(8.,7.)),
+						Atlas(source: "source", index: Vec2(8.,4.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 
 				"down": Animated(
@@ -35,8 +37,9 @@
 						Atlas(source: "source", index: Vec2(8.,3.)),
 						Atlas(source: "source", index: Vec2(8.,6.)),
 						Atlas(source: "source", index: Vec2(8.,9.)),
+						Atlas(source: "source", index: Vec2(8.,6.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 
 				"right": Animated(
@@ -44,8 +47,9 @@
 						Atlas(source: "source", index: Vec2(9.,2.)),
 						Atlas(source: "source", index: Vec2(9.,5.)),
 						Atlas(source: "source", index: Vec2(9.,8.)),
+						Atlas(source: "source", index: Vec2(9.,5.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 
 			
@@ -54,8 +58,9 @@
 						Atlas(source: "source", index: Vec2(7.,1.)),
 						Atlas(source: "source", index: Vec2(7.,4.)),
 						Atlas(source: "source", index: Vec2(7.,7.)),
+						Atlas(source: "source", index: Vec2(7.,4.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 
 				"left_down": Animated(
@@ -63,8 +68,9 @@
 						Atlas(source: "source", index: Vec2(7.,3.)),
 						Atlas(source: "source", index: Vec2(7.,6.)),
 						Atlas(source: "source", index: Vec2(7.,9.)),
+						Atlas(source: "source", index: Vec2(7.,6.)),
 					],
-					speed: 1
+					speed: .1
 				),
 
 				"right_up": Animated(
@@ -72,8 +78,9 @@
 						Atlas(source: "source", index: Vec2(9.,1.)),
 						Atlas(source: "source", index: Vec2(9.,4.)),
 						Atlas(source: "source", index: Vec2(9.,7.)),
+						Atlas(source: "source", index: Vec2(9.,4.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 
 				"right_down": Animated(
@@ -81,8 +88,9 @@
 						Atlas(source: "source", index: Vec2(9.,3.)),
 						Atlas(source: "source", index: Vec2(9.,6.)),
 						Atlas(source: "source", index: Vec2(9.,9.)),
+						Atlas(source: "source", index: Vec2(9.,6.)),
 					],
-					speed: 1.
+					speed: .1
 				),
 				
 			}
@@ -117,16 +125,17 @@
 				Atlas(source: "source", index: Vec2(19,3.)),
 				Atlas(source: "source", index: Vec2(19,4.)),
 			],
-			speed: 1.
+			speed: .5
 		),
 		"water": Animated(
 			frames: [
 				Atlas(source: "source", index: Vec2(11.,1.)),
 				Atlas(source: "source", index: Vec2(11.,2.)),
 				Atlas(source: "source", index: Vec2(11.,3.)),
+				Atlas(source: "source", index: Vec2(11.,2.)),
 				
 			],
-			speed: 1.
+			speed: .1
 		)
 }
 )

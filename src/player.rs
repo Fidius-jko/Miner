@@ -1,6 +1,6 @@
-use crate::resources::*;
 use crate::settings::controls::*;
-use bevy::{asset::LoadState, prelude::*};
+use crate::{resources::*, settings::ScaleSize};
+use bevy::{asset::LoadState, input::mouse::MouseWheel, prelude::*};
 
 const PLAYER_LOAD_NAME: &str = "player";
 const PLAYER_TSET: &str = "Graphics/robot.tset.ron";
@@ -16,7 +16,7 @@ impl Plugin for PlayerPlugin {
                 Update,
                 (
                     check_load.run_if(in_state(crate::GameState::Loading)),
-                    move_player.run_if(in_state(crate::GameState::Playing)),
+                    (move_player, scale_cam).run_if(in_state(crate::GameState::Playing)),
                 ),
             )
             .add_systems(OnEnter(crate::GameState::Loading), load_assets);
@@ -35,6 +35,7 @@ fn setup_player(mut commands: Commands, assets: Res<PlayerAssets>) {
             },
             ..Default::default()
         },
+        Name::new("Player"),
         TSetManager::new(assets.tileset.clone(), "left", TSetTile::Single),
     ));
 }
@@ -46,6 +47,7 @@ struct Player {
 
 fn move_player(
     mut player: Query<(&Player, &mut Transform, &mut TSetManager)>,
+    mut cam: Query<&mut Transform, (With<Camera>, Without<Player>)>,
     controls: Res<ControlBinds>,
 ) {
     let move_x = controls.is_pressed("move_right") as i32 - controls.is_pressed("move_left") as i32;
@@ -53,17 +55,56 @@ fn move_player(
 
     let (pl, mut trans, mut manager) = player.single_mut();
     if move_x > 0 {
-        manager.set_tile("right");
+        manager.set_tile("right", TSetTile::Single);
     } else if move_x < 0 {
-        manager.set_tile("left");
+        manager.set_tile("left", TSetTile::Single);
     } else if move_y > 0 {
-        manager.set_tile("up");
+        manager.set_tile("up", TSetTile::Single);
     } else if move_y < 0 {
-        manager.set_tile("down");
+        manager.set_tile("down", TSetTile::Single);
     }
 
     trans.translation.x += move_x as f32 * pl.speed;
     trans.translation.y += move_y as f32 * pl.speed;
+
+    let mut cam = cam.single_mut();
+    cam.translation = Vec3::new(trans.translation.x, trans.translation.y, cam.translation.z);
+}
+
+#[derive(Component)]
+pub struct PlayerCamera {
+    scale: f32,
+}
+impl Default for PlayerCamera {
+    fn default() -> Self {
+        Self { scale: 1. }
+    }
+}
+
+fn scale_cam(
+    mut cam: Query<(&mut Transform, &mut PlayerCamera), (With<Camera>, Without<Player>)>,
+    mut scroll_evr: EventReader<MouseWheel>,
+    scale: Res<ScaleSize>,
+) {
+    use bevy::input::mouse::MouseScrollUnit;
+    let (mut trans, mut cam) = cam.single_mut();
+    for ev in scroll_evr.read() {
+        match ev.unit {
+            MouseScrollUnit::Line => {
+                cam.scale -= scale.0 as f32 * ev.y;
+            }
+            MouseScrollUnit::Pixel => {
+                cam.scale -= scale.0 as f32 * ev.y;
+            }
+        }
+    }
+    if cam.scale < 55. {
+        cam.scale = 55.;
+    }
+    if cam.scale > 200. {
+        cam.scale = 200.;
+    }
+    trans.scale = Vec3::new(cam.scale / 100., cam.scale / 100., 1.);
 }
 
 // PL assets
@@ -90,8 +131,8 @@ fn check_load(
     mut tsets: ResMut<Assets<crate::resources::TextureSetAsset>>,
     mut load: ResMut<crate::LoadProcess>,
 ) {
-    match server.get_load_state(assets.tileset.clone()) {
-        Some(s) => match s {
+    if let Some(s) = server.get_load_state(assets.tileset.clone()) {
+        match s {
             LoadState::NotLoaded => {
                 assets.tileset = server.load(PLAYER_TSET);
             }
@@ -106,7 +147,6 @@ fn check_load(
                 tset.check_or_build(images, atlases);
                 load.set(PLAYER_LOAD_NAME);
             }
-        },
-        _ => {}
+        }
     }
 }

@@ -24,7 +24,6 @@ impl Plugin for TSetPlugin {
             .init_asset_loader::<TextureSetLoader>()
             .register_type::<TSetManager>()
             .add_systems(PostUpdate, update);
-        // .add_systems(Update, update);
     }
 }
 #[derive(Deserialize, Debug, Clone)]
@@ -100,14 +99,12 @@ pub struct TextureSetAsset {
 impl TextureSetAsset {
     pub fn get_tile(&self, path: &str) -> Tile {
         match self.get_tile_(path) {
-            Some(t) => {
-                return t;
-            }
+            Some(t) => t,
             None => {
                 warn!("Not found texture using default");
-                return Tile::Single(SourceLink::Texture {
+                Tile::Single(SourceLink::Texture {
                     source: String::from("_@default"),
-                });
+                })
             }
         }
     }
@@ -225,11 +222,6 @@ impl TextureSetAsset {
                     for i in rects.iter() {
                         texture_atlas.add_texture(*i);
                     }
-
-                    // src_info.insert(
-                    //     src_name.clone(),
-                    //     SourceInfo::Texture(texture_atlas.get_texture_index(hdl.id()).unwrap()),
-                    // );
                 }
                 PreSource::Texture { img: _, hdl } => {
                     src_info.insert(
@@ -404,7 +396,7 @@ fn rects(size: Vec2, rows: u32, columns: u32, offset: Vec2) -> Vec<Rect> {
 pub enum TSetTile {
     Single,
     Variant(String),
-    Animated(i32),
+    Animated(u64),
 }
 
 #[derive(Component, Reflect)]
@@ -422,8 +414,14 @@ impl TSetManager {
             data,
         }
     }
-    pub fn set_tile(&mut self, name: &str) {
+    pub fn set_tile(&mut self, name: &str, data: TSetTile) {
         self.tile_name = name.to_string();
+        self.data = data;
+    }
+    pub fn update_frame(&mut self, frame: u64) {
+        if let TSetTile::Animated(mframe) = self.data {
+            self.data = TSetTile::Animated(frame);
+        }
     }
 }
 
@@ -443,11 +441,14 @@ fn update(
         .for_each(
             |(manager, mut atlas, mut sprite)| match tsets.get(manager.tset.clone()) {
                 Some(n) => match n.get_tile(&manager.tile_name) {
-                    Tile::Animated { frames, speed: _ } => {
+                    Tile::Animated { frames, speed } => {
                         if let TSetTile::Animated(frame) = manager.data {
-                            if frames.len() > 0 {
+                            if !frames.is_empty() {
                                 let (index, atlas2) = n.index_and_atlas(
-                                    frames.get(frame as usize % frames.len()).unwrap().clone(),
+                                    frames
+                                        .get((frame as f32 * speed) as usize % frames.len())
+                                        .unwrap()
+                                        .clone(),
                                 );
                                 *atlas = atlas2;
                                 sprite.index = index;
